@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class ConnectDB {
@@ -13,11 +15,11 @@ public class ConnectDB {
 	Connection connect = null;
 	Statement statement = null;
 	PreparedStatement ps = null;
-	ResultSet rs = null;
+	ResultSet resultSet = null;
 	
 	public static Properties loadProperties() throws IOException{
 		Properties prop = new Properties();
-		InputStream ism = new FileInputStream("C:\\Users\\rrt\\workspace-July2016\\project7\\src\\MySql.properties");
+		InputStream ism = new FileInputStream("src\\MySql.properties");
 		prop.load(ism);
 		ism.close();
 		
@@ -33,6 +35,45 @@ public class ConnectDB {
 		connect = DriverManager.getConnection(url,userName,password);
 		System.out.println("Database is connected");
 	
+	}
+	
+	public List<String> readDataBase(String tableName, String columnName)throws Exception{
+		List<String> data = new ArrayList<String>();
+		
+		try {
+			connectToDatabase();
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery("select * from " + tableName);
+			data = getResultSetData(resultSet, columnName);
+		} catch (ClassNotFoundException e) {
+			throw e;
+		}finally{
+			close();
+		}
+		return data;
+	}
+	private void close() {
+		try{
+			if(resultSet != null){
+				resultSet.close();
+			}
+			if(statement != null){
+				statement.close();
+			}
+			if(connect != null){
+				connect.close();
+			}
+		}catch(Exception e){
+			
+		}
+	}
+	private List<String> getResultSetData(ResultSet resultSet2,String columnName) throws SQLException {
+		List<String> dataList = new ArrayList<String>();
+		while(resultSet.next()){
+			String itemName = resultSet.getString(columnName);
+			dataList.add(itemName);
+		}
+		return dataList;
 	}
 
 }
