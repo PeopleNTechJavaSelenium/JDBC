@@ -8,6 +8,7 @@ import org.bson.Document;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -21,14 +22,17 @@ public class ConnectMongoDB {
 		System.out.println("mongodb is connected");
 		return mdb;
 	}
-	public MongoDatabase connectMongoRemote(String databaseName){
-		MongoClient mClient = new MongoClient();
+	public MongoDatabase connectMongoRemote(String host, String port,String databaseName){
+		MongoClientURI mcUri = new MongoClientURI(host);
+		MongoClient mClient = new MongoClient(mcUri);
+		System.out.println("mongoDB Remote Connection has been established");
 		mdb = mClient.getDatabase(databaseName);
 		System.out.println("mongodb is connected");
 		return mdb;
 	}
 	public void insert(String databaseName,String collectionName,String newsType, String writerName, String date){
-		mdb = connectMongoRemote(databaseName);
+		
+		mdb = connectMongo(databaseName);
 		MongoCollection mCollection = mdb.getCollection(collectionName);
 		Document doc = new Document().append("news",newsType).append("writer", writerName).append("date", date);
 		mCollection.insertOne(doc);

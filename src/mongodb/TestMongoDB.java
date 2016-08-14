@@ -18,6 +18,11 @@ public class TestMongoDB {
 			System.out.println(JSON.parse(doc.toJson()));
 		}
 		
+		//Remte Connection
+		String host = "";
+		String port = "";
+		String databaseName = "";
+		mongo.connectMongoRemote(host, port, databaseName);
 
 	}
 
