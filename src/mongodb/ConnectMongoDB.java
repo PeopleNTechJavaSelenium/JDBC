@@ -16,7 +16,7 @@ import com.mongodb.client.MongoDatabase;
 public class ConnectMongoDB {
 	MongoDatabase mdb = null;
 	
-	public MongoDatabase connectMongo(String databaseName){
+	public MongoDatabase connectMongoLocal(String databaseName){
 		MongoClient mClient = new MongoClient();
 		mdb = mClient.getDatabase(databaseName);
 		System.out.println("mongodb is connected");
@@ -32,14 +32,14 @@ public class ConnectMongoDB {
 	}
 	public void insert(String databaseName,String collectionName,String newsType, String writerName, String date){
 		
-		mdb = connectMongo(databaseName);
+		mdb = connectMongoLocal(databaseName);
 		MongoCollection mCollection = mdb.getCollection(collectionName);
 		Document doc = new Document().append("news",newsType).append("writer", writerName).append("date", date);
 		mCollection.insertOne(doc);
 	}
 	public List<Document> getMongoDBData(String databaseName, String collectionName){
 		List<Document> list = new ArrayList<Document>();
-		mdb = connectMongo(databaseName);
+		mdb = connectMongoLocal(databaseName);
 		MongoCollection coll = mdb.getCollection(collectionName);	
 		List<Document> docList = ((List<Document>)coll.find().into(new ArrayList<Document>()));
 		for(Document doc:docList){
